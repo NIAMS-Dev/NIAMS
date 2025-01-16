@@ -5,7 +5,6 @@ import streamlit as st
 
 
 # ボタン群を横並びに配置
-# 上部にボタンを横並びで配置
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
