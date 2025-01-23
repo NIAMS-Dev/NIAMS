@@ -2,7 +2,7 @@ import streamlit as st
 import pymysql
 
 # データベース接続情報
-DB_HOST = "192.168.0.11"
+DB_HOST = "database.chiffon-lab.tech"
 DB_PORT = 33221
 DB_NAME = "NIAMS"
 DB_USER = "niams"
