@@ -4,19 +4,23 @@ import streamlit as st
 
 
 
+
 # ボタン群を横並びに配置
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    if st.button("ボタン1", key="button1"):
+    if st.button("カード読み取り", key="yomitori"):
+        #ボタン押下時の処理
         st.write("ボタン1が押されました")
 
 with col2:
-    if st.button("ボタン2", key="button2"):
+    if st.button("免除処理", key="menjo"):
+        #ボタン押下時の処理
         st.write("ボタン2が押されました")
 
 with col3:
-    if st.button("ボタン3", key="button3"):
+    if st.button("訂正", key="teisei"):
+        #ボタン押下時の処理
         st.write("ボタン3が押されました")
 
 with col4:
