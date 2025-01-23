@@ -1,17 +1,14 @@
 import streamlit as st
 
-# 出席テーブルから出席データを取得して、リストとして表示する
-
-
-
 
 # ボタン群を横並びに配置
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    if st.button("カード読み取り", key="yomitori"):
-        #ボタン押下時の処理
-        st.write("ボタン1が押されました")
+    if st.button("カード読み取り", key="yomitori_btn"):
+        # yomitori.pyに遷移する
+        st.experimental_set_query_params(page="yomitori")
+        st.experimental_rerun()
 
 with col2:
     if st.button("免除処理", key="menjo"):
@@ -33,7 +30,6 @@ with col4:
         st.write(f"検索結果: {search_query} に関連する情報を表示します。")
     else:
         st.write("検索キーワードを入力してください。")
-
 
 # サイドバーにメニューを表示
 st.sidebar.selectbox(
