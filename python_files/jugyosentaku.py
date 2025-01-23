@@ -8,18 +8,23 @@ def render():
     st.write("カレッジ、学年、授業を選択してください")
 
     # サイドバーにメニューを表示
-    st.sidebar.selectbox(
+    college = st.sidebar.selectbox(
         "カレッジ",
-        ["カレッジA", "カレッジB", "カレッジC"]
+        ["選択してください", "カレッジA", "カレッジB", "カレッジC"]
     )
-    st.sidebar.selectbox(
+    grade = st.sidebar.selectbox(
         "学年",
-        ["1年", "2年", "3年", "4年"]
+        ["選択してください", "1年", "2年", "3年", "4年"]
     )
-    st.sidebar.selectbox(
+    subject = st.sidebar.selectbox(
         "授業",
-        ["数学", "英語", "プログラミング"]
+        ["選択してください", "数学", "英語", "プログラミング"]
     )
+
+    # 全ての項目が選択された場合にページ遷移
+    if college != "選択してください" and grade != "選択してください" and subject != "選択してください":
+        st.experimental_set_query_params(page="syussekihyouji", college=college, grade=grade, subject=subject)
+        st.experimental_rerun()
 
     # ログアウトボタンを表示
     if st.sidebar.button("ログアウト"):
