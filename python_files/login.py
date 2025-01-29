@@ -1,43 +1,78 @@
 import streamlit as st
+import pymysql
 
-# セッションステートの初期化
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
+# データベース接続情報
+DB_HOST = "database.chiffon-lab.tech"
+DB_PORT = 33221
+DB_NAME = "NIAMS"
+DB_USER = "niams"
+DB_PASS = "moimoi"
 
-# ログイン画面
-if not st.session_state.logged_in:
-    st.title('ログイン画面')
+# データベースに接続する関数
+def get_db_connection():
+    conn = pymysql.connect(
+        host=DB_HOST,
+        port=DB_PORT,
+        user=DB_USER,
+        password=DB_PASS,
+        database=DB_NAME
+    )
+    return conn
 
-    # クエリパラメータの取得
-    query_params = st.query_params
+# ログイン処理を行う関数
+def login():
+    # セッションステートの初期化
+    if 'logged_in' not in st.session_state:
+        st.session_state.logged_in = False
 
-    # ユーザー名とパスワードの入力フィールド
-    username = st.text_input('ユーザー名', value=st.query_params.get('username', [''])[0])
-    password = st.text_input('パスワード', type='password')
+    # ログイン画面
+    if not st.session_state.logged_in:
+        st.title('ログイン画面')
 
-    # ログインボタン
-    if st.button('ログイン'):
-        if username == 'admin' and password == 'password':
-            st.session_state.logged_in = True
-            st.experimental_rerun()
-        else:
-            st.error('ユーザー名またはパスワードが間違っています')
+        # クエリパラメータの取得
+        query_params = st.experimental_get_query_params()
+
+        # ユーザー名とパスワードの入力フィールド
+        username = st.text_input('ユーザー名', value=query_params.get('username', [''])[0])
+        password = st.text_input('パスワード', type='password')
+
+        # ログインボタン
+        if st.button('ログイン'):
+            try:
+                # データベースに接続
+                conn = get_db_connection()
+                cursor = conn.cursor()
+
+                # ユーザー情報の確認
+                cursor.execute("SELECT * FROM MST_USER WHERE USER_NAME = %s AND PASSWD = %s", (username, password))
+                user = cursor.fetchone()
+
+                if user:
+                    st.session_state.logged_in = True
+                    st.experimental_set_query_params(page="jugyosentaku")  # ページ遷移
+                    st.rerun()
+                else:
+                    st.error('ユーザー名またはパスワードが間違っています')
+
+                cursor.close()
+                conn.close()
+            except pymysql.MySQLError as err:
+                st.error(f"データベース接続エラー: {err}")
 
 # 授業選択画面
-if st.session_state.logged_in:
-    st.title('授業選択画面')
+def jugyosentaku():
+    if st.session_state.logged_in:
+        st.title('授業選択画面')
 
-    # カレッジの選択
-    college = st.selectbox('カレッジを選択してください', ['工学部', '文学部', '理学部'])
+        # カレッジの選択
+        college = st.selectbox('カレッジを選択してください', ['工学部', '文学部', '理学部'])
 
-    # 学年の選択
-    grade = st.selectbox('学年を選択してください', ['1年', '2年', '3年', '4年'])
+# メイン処理
+if __name__ == "__main__":
+    query_params = st.experimental_get_query_params()
+    page = query_params.get("page", ["login"])[0]
 
-    # 授業の選択
-    course = st.selectbox('授業を選択してください', ['数学', '物理', '化学', '生物'])
-
-    # 選択結果の表示
-    if st.button('選択を確定'):
-        st.write(f'カレッジ: {college}')
-        st.write(f'学年: {grade}')
-        st.write(f'授業: {course}')
+    if page == "login":
+        login()
+    elif page == "jugyosentaku":
+        jugyosentaku()

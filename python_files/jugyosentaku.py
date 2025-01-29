@@ -1,4 +1,5 @@
 import streamlit as st
+import sys
 
 def render():
     # ページタイトル
@@ -23,16 +24,17 @@ def render():
 
     # 全ての項目が選択された場合にページ遷移
     if college != "選択してください" and grade != "選択してください" and subject != "選択してください":
-        st.experimental_set_query_params(page="syussekihyouji", college=college, grade=grade, subject=subject)
-        st.experimental_rerun()
+        st.query_params.update({"page": "syussekihyouji", "college": college, "grade": grade, "subject": subject})
+        st.rerun()
 
     # ログアウトボタンを表示
     if st.sidebar.button("ログアウト"):
         # ログアウト時にログイン画面に戻る
         st.session_state.logged_in = False
-        st.experimental_set_query_params(page="main")
-        st.experimental_rerun()
+        st.query_params.update({"page": "main"})
+        st.rerun()
 
     # シャットダウンボタンを表示
     if st.sidebar.button("シャットダウン", key="shutdown-button"):
         st.write("アプリを終了します")
+        st.stop()  # Streamlitの安全な停止方法
